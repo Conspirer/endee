@@ -30,3 +30,8 @@ frontend/*
 
 # DS Store
 .DS_Store
+
+
+venv/
+
+__pycache__/
