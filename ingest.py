@@ -79,5 +79,5 @@ def build_vector_database(repo_path):
 
 if __name__ == "__main__":
     # Point this to a small project folder on your machine first to test
-    TARGET_REPO = "/home/ubermensch/Bellum/WhatBytes_Django/" # Example: Pointing to a parent directory or a specific project
+    TARGET_REPO = "/home/ubermensch/Bellum/WhatBytes_Django/config/" # Example: Pointing to a parent directory or a specific project
     build_vector_database(TARGET_REPO)
