@@ -12,6 +12,24 @@ with st.sidebar:
     st.success("Endee DB: Connected")
     st.success("LLM: Llama-3.3-70b Active")
     st.info("Ingested Project: WhatBytes_Django")
+    st.divider()
+    st.header("Ingest New Project")
+    repo_url = st.text_input("GitHub Repository URL", placeholder="https://github.com/user/repo")
+    
+    if st.button("Clone & Ingest"):
+        if repo_url:
+            with st.spinner("Cloning and indexing into Endee..."):
+                from ingest_service import ingest_from_github
+                try:
+                    index_name = ingest_from_github(repo_url)
+                    # Update session state so the backend knows which index to query
+                    st.session_state['active_index'] = index_name
+                    st.success(f"Success! Active Index: {index_name}")
+                except Exception as e:
+                    st.error(f"Failed to ingest: {e}")
+        else:
+            st.warning("Please provide a valid URL.")
+    
 
 # User Input
 question = st.text_input("Ask a question about the codebase:", placeholder="e.g., How are the database models structured?")
@@ -21,9 +39,14 @@ if st.button("Analyze Codebase"):
         with st.spinner("Searching Endee DB and generating expert answer..."):
             try:
                 # Direct call to your FastAPI backend
+                # Direct call to your FastAPI backend
                 response = requests.post(
                     "http://127.0.0.1:8000/ask", 
-                    json={"question": question}
+                    json={
+                        "question": question,
+                        # Pass the active index, defaulting to 'codebase' if none is set
+                        "index_name": st.session_state.get('active_index', 'codebase') 
+                    }
                 )
                 
                 if response.status_code == 200:
